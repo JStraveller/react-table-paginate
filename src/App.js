@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import ReactPaginate from 'react-paginate'
 import { Table } from './components/Table'
+import { Filter } from './components/Filter'
+import './pagination.css'
 
 
 const App = () => {
@@ -33,27 +36,48 @@ const App = () => {
         return (first[colName] > next[colName]) ? 1 : -1
       }
     })
+    //неправильный reverse
     let reverse  //false
-    if (colName !== sort.lastSorted && sort.reverseDir === true) {
-      reverse = sort.reverseDir
-    } else {
-      reverse = !sort.reverseDir
-    }
+    (colName !== sort.lastSorted && sort.reverseDir === true) 
+    ? reverse = sort.reverseDir 
+    : reverse = !sort.reverseDir
+    
     setSort({ reverseDir: reverse, lastSorted: colName })
     setData(sorted)
   }
 
+  const [filterTerm, setTerm] = useState({})
+
+  const filterVal = filterItem => (
+    setTerm({filterItem, curPage: 0})
+  )
 
   return (
     <div className='container'>
       <h1>Table</h1>
       <div className='row'>
         <div className='ten columns'>
+          <Filter filterVal={filterVal} />
           <Table
             data={data}
             sortCol={sortCol}
             isReverse={sort.reverseDir}
           />
+          
+          <ReactPaginate 
+            pageCount={5}
+            pageRangeDisplayed={5}
+            marginPagesDisplayed={2}
+            breakLabel={'...'}
+            breakClassName={'item break-me'}
+            containerClassName={'pagination'}
+            activeClassName={'item active'}
+            disabledClassName={'disabled-page'}
+            nextClassName={"item next"}
+            pageClassName={'item pagination-page '}
+            previousClassName={"item previous"}
+          />
+          
         </div>
         <div className='two columns'>11</div>
       </div>
